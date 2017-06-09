@@ -1,0 +1,27 @@
+{
+  "name": "tong",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ITtong/WeChatPublic.git"
+  },
+  "author": "tongshuo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ITtong/WeChatPublic/issues"
+  },
+  "homepage": "https://github.com/ITtong/WeChatPublic#readme",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "koa": "^2.0.0-alpha.8",
+    "path": "^0.12.7",
+    "request": "^2.81.0",
+    "sha1": "^1.1.1",
+    "wechat": "^2.1.0"
+  }
+}
