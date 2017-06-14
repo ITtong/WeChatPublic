@@ -5,6 +5,9 @@ var sha1 = require('sha1');
 var getRawBody = require('raw-body');
 var Wechat = require('./accessToken');
 var conversion = require('./conversion');
+var count = require('../libs/count');
+var path = require('path');
+var viewCountPath = path.join(__dirname, '../config/count.txt')
 
 module.exports = function (opts) {
 	var wechat = new Wechat(opts)
@@ -42,7 +45,7 @@ module.exports = function (opts) {
 				})
 
 				var dataContent = yield conversion.parseXMLAsync(data)
-				console.log(dataContent)
+				//console.log(dataContent)
 
 				var message = conversion.formatMessage(dataContent.xml)
 
@@ -50,6 +53,7 @@ module.exports = function (opts) {
 
 				if(message.MsgType === 'event') {
 					if(message.Event === 'subscribe') {
+						count(viewCountPath, true);
 						var now = new Date().getTime()
 
 						that.status = 200
@@ -69,9 +73,13 @@ module.exports = function (opts) {
 									'</xml>'
 						return
 					}
+					if(message.Event === 'unsubscribe') {
+						count(viewCountPath, false)
+					}
 				}
 			}
 		}
+		yield* next;
 	}
 }
 

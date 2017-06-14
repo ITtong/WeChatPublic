@@ -3,32 +3,51 @@
 var fs = require('fs');
 
 
-module.exports = function (fpath) {
-	return function *count(next) {
-		if(!fpath) {
-			this.body = 'the file path for count is not defined!'
-			return false
-		}
-		fs.exists(fpath, function (exists) {
-			if(!exists) {
-				// 文件不存在
-				fs.create.WriteStream(fpath);
-			}
-			fs.readFile(fpath, encoding, function (err, content) {
-				if(err) {
-					this.body = err
-				}
-				else {
-					this.countNum = ++content
-				}
-			})
-			fs.writeFile(fpath, this.countNum, function (err) {
-				if(err) {
-					this.body = err
-				}else{
-					console.log('success')
-				}
-			})
-		})
+module.exports = function count(fpath, subscribe) {
+	if(!fpath) {
+		throw new Error('缺少文件路径')
 	}
+
+	var num;
+
+	
+	fs.exists(fpath, function (exists) {
+		if(exists) {
+			fs.readFile(fpath,'utf8',function (err,data) {
+				if(err) {
+					return
+				} else {
+					console.log(data);
+					num = parseInt(data, 10);
+				}
+			})
+		}
+		else {
+			fs.createWriteStream(fpath)
+		}
+	})
+	
+
+	if(isNaN(num)) {
+		num = 0
+	}
+	if(subscribe) {
+		num++;
+		fs.writeFile(fpath, num)
+	}
+	else {
+		num--;
+		fs.writeFile(fpath, num)
+	}
+	return num
+	/*return function *count(next) {
+		if(this.method === 'GET' && this.url.indexOf('/favicon.ico') === -1) {
+			num++
+
+			fs.writeFile(fpath, num)
+		}
+
+		this.count = num
+		yield* next;
+	}*/
 }
