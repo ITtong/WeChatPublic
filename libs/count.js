@@ -25,8 +25,10 @@ module.exports = function (fpath) {
 			fs.writeFile(fpath, this.countNum, function (err) {
 				if(err) {
 					this.body = err
+				}else{
+					console.log('success')
 				}
-			} )
+			})
 		})
 	}
 }

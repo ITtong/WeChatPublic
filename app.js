@@ -6,6 +6,7 @@ var util = require('./libs/utils');
 var wechat = require('./wechat/generator');
 var count = require('./libs/count');
 var wechat_file = path.join(__dirname, './config/wechat.txt');
+var viewCountPath = path.join(__dirname, './config/count.txt')
 
 var config = {
 	wechat:{
@@ -20,12 +21,12 @@ var config = {
 			return util.writeFileAsync(wechat_file,data)
 		}
 	},
-	viewCountPath:path.join(__dirname, './config/count.txt')
+	
 }
 
 var app = new Koa();
 app.use(wechat(config.wechat))
-app.use(count(config.viewCountPath))
+app.use(count(viewCountPath))
 
 app.listen(1234);
 console.log('Listening:1234')
