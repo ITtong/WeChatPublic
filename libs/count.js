@@ -17,29 +17,41 @@ module.exports = function count(fpath, subscribe) {
 				if(err) {
 					return
 				} else {
-					console.log(data);
+					if(isNaN(data)) {
+						data = 0
+					}
 					num = parseInt(data, 10);
+					if(subscribe) {
+						num++;
+						fs.writeFile(fpath, num)
+					}
+					else {
+						num--;
+						fs.writeFile(fpath, num)
+					}
+					return num
 				}
 			})
 		}
 		else {
 			fs.createWriteStream(fpath)
+			num = 0;
+			if(subscribe) {
+				console.log(num);
+				num++;
+				fs.writeFile(fpath, num)
+			}
+			else {
+				num--;
+				fs.writeFile(fpath, num)
+			}
+			return num
 		}
 	})
 	
 
-	if(isNaN(num)) {
-		num = 0
-	}
-	if(subscribe) {
-		num++;
-		fs.writeFile(fpath, num)
-	}
-	else {
-		num--;
-		fs.writeFile(fpath, num)
-	}
-	return num
+	
+
 	/*return function *count(next) {
 		if(this.method === 'GET' && this.url.indexOf('/favicon.ico') === -1) {
 			num++
