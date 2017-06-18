@@ -6,6 +6,7 @@ var getRawBody = require('raw-body');
 var Wechat = require('./accessToken');
 var conversion = require('./conversion');
 var count = require('../libs/count');
+var replay = require('./replay');
 var path = require('path');
 var viewCountPath = path.join(__dirname, '../config/count.txt')
 
@@ -14,7 +15,6 @@ module.exports = function (opts) {
 
 	return function *(next) {
 		//console.log(this.query)
-		var that = this
 		var token = opts.token
 		var signature = this.query.signature
 		var nonce = this.query.nonce
@@ -51,26 +51,33 @@ module.exports = function (opts) {
 
 				console.log(message);
 
+
+				this.weixin = message;
+
+				//console.log(this.weixin);
+
+				//replay.call(this);
+
+
 				if(message.MsgType === 'event') {
 					if(message.Event === 'subscribe') {
 						count(viewCountPath, true);
 						var now = new Date().getTime()
+						
+						console.log(111111111111111111111)
+						console.log(this.weixin);
 
-						that.status = 200
-						that.type = 'application/xml'
-						/*这里的ToUserName是发送给哪个微信公众号，
-						而FromUserName是由哪个开发者发送的，
-						这里正好与message中的相反，
-						message是公众号订阅时候由公众号发起的数据，
-						所以这里的FromUserName是公众号的OpenID，
-						ToUserName是开发者微信号*/
-						that.body = '<xml>'+
+						this.status = 200
+						this.type = 'application/xml'
+						
+						this.body = '<xml>'+
 									'<ToUserName><![CDATA['+ message.FromUserName +']]></ToUserName>'+
 									'<FromUserName><![CDATA['+ message.ToUserName +']]></FromUserName>'+
 									'<CreateTime>'+ now +'</CreateTime>'+
 									'<MsgType><![CDATA[text]]></MsgType>'+
 									'<Content><![CDATA[Hi,欢迎您关注我~]]></Content>'+
 									'</xml>'
+
 						return
 					}
 					if(message.Event === 'unsubscribe') {

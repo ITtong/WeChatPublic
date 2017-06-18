@@ -1,6 +1,7 @@
 'use strict'
 
 var fs = require('fs')
+var tpl = require('../wechat/tpl');
 
 exports.readFileAsync = function (fpath, encoding) {
 	return new Promise (function (res, rej) {
@@ -19,4 +20,26 @@ exports.writeFileAsync = function (fpath, content) {
 			else res()
 		})
 	})
+}
+
+
+exports.tpl = function (content, message) {
+	var info = {}
+	var type = 'text'
+	var formUserName = message.toUserName
+	var toUserName = message.formUserName
+
+	if (Array.isArray(content)) {
+		type = 'news'
+	}
+
+	type = content.type || type
+	info.content = content
+	info.createTime = new Date().getTime()
+	info.MsgType = type
+	info.toUserName = toUserName
+	info.formUserName = formUserName
+
+	return tpl.compiled(info)
+
 }
