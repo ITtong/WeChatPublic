@@ -6,15 +6,14 @@ var getRawBody = require('raw-body');
 var Wechat = require('./accessToken');
 var conversion = require('./conversion');
 var count = require('../libs/count');
-var replay = require('./replay');
+var reply = require('./reply');
 var path = require('path');
 var viewCountPath = path.join(__dirname, '../config/count.txt')
 
-module.exports = function (opts) {
+module.exports = function (opts, handler) {
 	var wechat = new Wechat(opts)
 
 	return function *(next) {
-		//console.log(this.query)
 		var token = opts.token
 		var signature = this.query.signature
 		var nonce = this.query.nonce
@@ -51,39 +50,11 @@ module.exports = function (opts) {
 
 				console.log(message);
 
-
 				this.weixin = message;
 
-				//console.log(this.weixin);
+				yield handler.call(this, next)
 
-				//replay.call(this);
-
-
-				if(message.MsgType === 'event') {
-					if(message.Event === 'subscribe') {
-						count(viewCountPath, true);
-						var now = new Date().getTime()
-						
-						console.log(111111111111111111111)
-						console.log(this.weixin);
-
-						this.status = 200
-						this.type = 'application/xml'
-						
-						this.body = '<xml>'+
-									'<ToUserName><![CDATA['+ message.FromUserName +']]></ToUserName>'+
-									'<FromUserName><![CDATA['+ message.ToUserName +']]></FromUserName>'+
-									'<CreateTime>'+ now +'</CreateTime>'+
-									'<MsgType><![CDATA[text]]></MsgType>'+
-									'<Content><![CDATA[Hi,欢迎您关注我~]]></Content>'+
-									'</xml>'
-
-						return
-					}
-					if(message.Event === 'unsubscribe') {
-						count(viewCountPath, false)
-					}
-				}
+				reply.call(this)
 			}
 		}
 		yield* next;

@@ -3,8 +3,6 @@
 var util = require('../libs/utils');
 
 module.exports = function replay () {
-	console.log(11111111111111111);
-	console.log(this);
 	var content = this.body
 	var message = this.weixin;
 

@@ -4,6 +4,7 @@ var Koa = require('koa');
 var path = require('path');
 var util = require('./libs/utils');
 var wechat = require('./wechat/generator');
+var weixin = require('./wechat/weixin');
 var wechat_file = path.join(__dirname, './config/wechat.txt');
 
 
@@ -25,7 +26,7 @@ var config = {
 
 var app = new Koa();
 
-app.use(wechat(config.wechat))
+app.use(wechat(config.wechat,weixin.reply ))
 
 
 

@@ -26,8 +26,8 @@ exports.writeFileAsync = function (fpath, content) {
 exports.tpl = function (content, message) {
 	var info = {}
 	var type = 'text'
-	var formUserName = message.toUserName
-	var toUserName = message.formUserName
+	var fromUserName = message.ToUserName
+	var toUserName = message.FromUserName
 
 	if (Array.isArray(content)) {
 		type = 'news'
@@ -38,8 +38,7 @@ exports.tpl = function (content, message) {
 	info.createTime = new Date().getTime()
 	info.MsgType = type
 	info.toUserName = toUserName
-	info.formUserName = formUserName
+	info.fromUserName = fromUserName
 
 	return tpl.compiled(info)
-
 }
