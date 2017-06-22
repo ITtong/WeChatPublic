@@ -49,7 +49,7 @@ exports.reply = function *(next) {
 				}
 			]
 		} else if (content === '5') {
-			var data = yield wechatApi.uploadMaterial('image', __dirname+'/2.jpg')
+			var data = yield wechatApi.uploadMaterial('image', '../static/image/2.jpg')
 
 			console.log(data)
 			reply = {
@@ -58,7 +58,6 @@ exports.reply = function *(next) {
 			}
 			console.log(reply)
 		}
-
 		this.body = reply
 	}
 }
