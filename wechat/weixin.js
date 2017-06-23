@@ -35,10 +35,6 @@ exports.reply = function *(next) {
 
 		if(content === '1') {
 			reply = '天下第一吃大米';
-		} else if(content === '2') {
-			reply = '天下第二吃豆腐';
-		} else if(content === '3') {
-			reply = '天下第三吃仙丹';
 		} else if(content === '4') {
 			reply = [
 				{
@@ -49,7 +45,7 @@ exports.reply = function *(next) {
 				}
 			]
 		} else if (content === '5') {
-			var data = yield wechatApi.uploadMaterial('image', '../static/image/2.jpg')
+			var data = yield wechatApi.uploadMaterial('image', __dirname + '/static/image/2.jpg')
 
 			console.log(data)
 			reply = {
@@ -57,6 +53,69 @@ exports.reply = function *(next) {
 				media_id:data.media_id
 			}
 			console.log(reply)
+		} else if(content === '6') {
+			var data = yield wechatApi.uploadMaterial('image', __dirname + '/static/image/2.jpg', {type:'image'})
+
+			console.log(data)
+			reply = {
+				type:'image',
+				media_id:data.media_id
+			}
+			console.log(reply)
+		} else if (content === '7') {
+			var data = yield wechatApi.uploadMaterial('video', __dirname+'/static/video/2.mp4', {type:'video', description:'{"title":"Really a nice place", "introduction":"nothing is esay"}'})
+			console.log(data)
+			reply = {
+				type:'video',
+				title:'回复视频内容',
+				description:'打个篮球玩玩',
+				media_id:data.media_id
+			}
+		} else if(content === '8') {
+			var picData = yield wechatApi.uploadMaterial('image', __dirname+'/static/image/2.jpg',{})
+
+			var media = {
+				articles:[
+					{
+						title:'哈哈哈哈1',
+						thumb_media_id:picData.media_id,
+						author:'TongShuo',
+						digest:'没有摘要',
+						show_cover_pic:1,
+						content:'没有内容啊···真的没有啊！',
+						content_source_url:'https://www.baidu.com'
+					},{
+						title:'哈哈哈哈2',
+						thumb_media_id:picData.media_id,
+						author:'TongShuo',
+						digest:'没有摘要',
+						show_cover_pic:1,
+						content:'没有内容啊···真的没有啊！',
+						content_source_url:'https://www.baidu.com'
+					}
+				]
+			}
+
+			data = yield wechatApi.uploadMaterial('news', media, {})
+			
+			data = yield wechatApi.fetchMaterial(data.media_id, 'news',{})
+			console.log(22222222222222222222)
+			console.log(data)
+			console.log(data.news_item)
+
+			var items = data.news_item
+			var news = []
+
+			items.forEach(function (item) {
+				news.push({
+					title:item.title,
+					description:item.digest,
+					pic_url:picData.url,
+					url:item.url
+				})
+			})
+
+			reply = news
 		}
 		this.body = reply
 	}
